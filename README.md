@@ -1,3 +1,3 @@
 # Speech-translator-project-
 
-Please read the user manual 
+Please download the contents and read the user manual 
