@@ -1,0 +1,106 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.box1{
+background-color: #F1E4B3;
+width: 1533px;
+height: 677px;
+}
+
+header{
+width: 1533px;
+height: 100px;
+    background-image: url(../images/header.png);
+    background-repeat: no-repeat;
+    margin-bottom: 20px;
+    border-bottom: solid 3px black;
+}
+
+a {
+    text-decoration: none;
+    color: black; /* Sets the default color */
+}
+
+a:visited {
+    color: black; /* Ensures it stays black even after visiting */
+}
+
+a:hover {
+    color: black; /* Optional: Changes color on hover */
+}
+
+
+
+.font1 {
+ letter-spacing: 1px;
+ padding-top: 18px;
+}
+
+.font2 {
+font-size: 28px; /* Larger font for the main heading */
+    font-weight: bold;
+    font-family: "Poppins", "Arial", sans-serif;
+    text-transform: capitalize;
+}
+
+.font3{
+font-size: 11px;
+}
+
+.button1 {
+margin-top: 10px;
+
+}
+
+.box3{
+margin-left: 690px;
+}
+
+.mainbox{
+background-color:;
+height: 400px;
+padding-top: 20px;
+}
+
+.box2 {
+width: 250px;
+height: 10px;
+margin-left: 642px;
+margin-top: 30px;
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hokkien Translator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        select {
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            background-color: #6200ea;
+            color: #fff;
+        }
+        button:hover {
+            background-color: #3700b3;
+        }
+        .output {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: left;
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .output p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Multilingual Translator</h1>
+        <label for="language-select">Select Language:</label>
+        <select id="language-select">
+            <option value="zh-CN">Mandarin (中文)</option>
+            <option value="en-US">English</option>
+        </select>
+        <button id="record-btn">🎤 Speak</button>
+        <div class="output" id="output">
+            <p><strong>Detected Language:</strong> <span id="language"></span></p>
+            <p><strong>Original:</strong> <span id="original-text"></span></p>
+            <p><strong>Hokkien (Hanzi):</strong> <span id="hokkien-hanzi"></span></p>
+            <p><strong>Hokkien (Tâi-lô):</strong> <span id="tailo-text"></span></p>
+            <p><strong>English:</strong> <span id="english-text"></span></p>
+        </div>
+    </div>
+
+    <script>
+         const dictionary = {
+            // Mandarin-to-Hokkien/English
+            "你好": { "hokkien": ["你好", "Lí hó"], "english": "Hello" },
+            "谢谢": { "hokkien": ["多谢", "Tó-sia"], "english": "Thank you" },
+            "早安": { "hokkien": ["早安", "Chá-khó"], "english": "Good morning" },
+            "晚安": { "hokkien": ["晚安", "Bn̄g án"], "english": "Good night" },
+            "你好吗": { "hokkien": ["你好無？", "Lí hó-bô?"], "english": "How are you?" },
+            "我很好": { "hokkien": ["我真好", "Góa chin hó"], "english": "I'm good" },
+            "请帮我": { "hokkien": ["请帮我", "Chhiáⁿ pang góa"], "english": "Please help me" },
+            "我需要帮助": { "hokkien": ["我需要幫助", "Góa su-iàu pang-chō͘"], "english": "I need help" },
+            "我觉得不舒服": { "hokkien": ["我感覺無舒適", "Góa kám-kak bô su-si̍t"], "english": "I feel unwell" },
+            "我要吃药": { "hokkien": ["我要食藥", "Góa beh chiah io̍h"], "english": "I need to take medicine" },
+            "时间到了": { "hokkien": ["時間到矣", "Sî-kan kàu ah"], "english": "It's time" },
+            "我们去吃饭": { "hokkien": ["咱去食飯", "Lán khì chia̍h png"], "english": "Let's go eat" },
+            "你累吗": { "hokkien": ["你真倦嗎？", "Lí chin kuān bô?"], "english": "Are you tired?" },
+            "我很累": { "hokkien": ["我真倦", "Góa chin kuān"], "english": "I'm very tired" },
+            "天气很好": { "hokkien": ["天气真好", "Thian-khì chin hó"], "english": "The weather is nice" },
+            "厕所在哪里": { "hokkien": ["厠所佇佗位？", "Chhek-só tī tó-ūi?"], "english": "Where is the toilet?" },
+
+            // English-to-Hokkien
+            "hello": { "hokkien": ["你好", "Lí hó"], "english": "你好" },
+            "thank you": { "hokkien": ["多谢", "Tó-sia"], "english": "谢谢" },
+            "good morning": { "hokkien": ["早安", "Chá-khó"], "english": "早安" },
+            "good night": { "hokkien": ["晚安", "Bn̄g án"], "english": "晚安" },
+            "how are you": { "hokkien": ["你好無？", "Lí hó-bô?"], "english": "你好吗" },
+            "i'm good": { "hokkien": ["我真好", "Góa chin hó"], "english": "我很好" },
+            "please help me": { "hokkien": ["请帮我", "Chhiáⁿ pang góa"], "english": "请帮我" },
+            "i need help": { "hokkien": ["我需要幫助", "Góa su-iàu pang-chō͘"], "english": "我需要帮助" },
+            "i feel unwell": { "hokkien": ["我感覺無舒適", "Góa kám-kak bô su-si̍t"], "english": "我觉得不舒服" },
+            "i need to take medicine": { "hokkien": ["我要食藥", "Góa beh chiah io̍h"], "english": "我要吃药" },
+            "it's time": { "hokkien": ["時間到矣", "Sî-kan kàu ah"], "english": "时间到了" },
+            "let's go eat": { "hokkien": ["咱去食飯", "Lán khì chia̍h png"], "english": "我们去吃饭" },
+            "are you tired": { "hokkien": ["你真倦嗎？", "Lí chin kuān bô?"], "english": "你累吗" },
+            "i'm very tired": { "hokkien": ["我真倦", "Góa chin kuān"], "english": "我很累" },
+            "the weather is nice": { "hokkien": ["天气真好", "Thian-khì chin hó"], "english": "天气很好" },
+            "where is the toilet": { "hokkien": ["厠所佇佗位？", "Chhek-só tī tó-ūi?"], "english": "厕所在哪里" }
+        };
+
+        const recordBtn = document.getElementById("record-btn");
+        const languageSelect = document.getElementById("language-select");
+        const originalText = document.getElementById("original-text");
+        const hokkienHanzi = document.getElementById("hokkien-hanzi");
+        const tailoText = document.getElementById("tailo-text");
+        const englishText = document.getElementById("english-text");
+        const languageText = document.getElementById("language");
+
+        if (!("webkitSpeechRecognition" in window)) {
+            alert("Your browser does not support speech recognition. Please use Chrome or Edge.");
+        } else {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recordBtn.addEventListener("click", () => {
+                recognition.lang = languageSelect.value;
+                recognition.start();
+                recordBtn.textContent = "Listening...";
+                recordBtn.disabled = true;
+            });
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase().trim();
+                originalText.textContent = transcript;
+                languageText.textContent = recognition.lang === "zh-CN" ? "Mandarin" : "English";
+
+                if (dictionary[transcript]) {
+                    hokkienHanzi.textContent = dictionary[transcript].hokkien[0];
+                    tailoText.textContent = dictionary[transcript].hokkien[1];
+                    englishText.textContent = dictionary[transcript].english;
+                    speakText(dictionary[transcript].english, "en-US");
+                    speakText(dictionary[transcript].hokkien[1], "zh-TW");
+                } else {
+                    hokkienHanzi.textContent = "Translation not found";
+                    tailoText.textContent = "Translation not found";
+                    englishText.textContent = "Translation not found";
+                }
+
+                recordBtn.textContent = "🎤 Speak";
+                recordBtn.disabled = false;
+            };
+
+            recognition.onerror = () => {
+                alert("Speech recognition error. Try again.");
+                recordBtn.textContent = "🎤 Speak";
+                recordBtn.disabled = false;
+            };
+        }
+
+        function speakText(text, lang) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>
+
+
+
+
